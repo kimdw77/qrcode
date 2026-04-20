@@ -1,6 +1,7 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import { getEventById, getEventDashboard } from '@/features/events/queries'
 import { notFound } from 'next/navigation'
+import { headers } from 'next/headers'
 import Link from 'next/link'
 import EventActionPanel from './EventActionPanel'
 import QrCodePanel from './QrCodePanel'
@@ -28,7 +29,10 @@ export default async function EventDetailPage({
 
   if (!event) notFound()
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+  const headersList = await headers()
+  const host = headersList.get('host') ?? 'localhost:3000'
+  const proto = headersList.get('x-forwarded-proto') ?? 'http'
+  const appUrl = `${proto}://${host}`
   const checkinUrl = `${appUrl}/e/${event.public_token}/checkin`
 
   return (

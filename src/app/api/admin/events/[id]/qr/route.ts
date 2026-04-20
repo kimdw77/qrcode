@@ -15,7 +15,9 @@ export async function GET(
   const event = await getEventById(createServiceClient(), id)
   if (!event) return NextResponse.json({ error: 'not_found' }, { status: 404 })
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+  const host = _req.headers.get('host') ?? 'localhost:3000'
+  const proto = _req.headers.get('x-forwarded-proto') ?? 'http'
+  const appUrl = `${proto}://${host}`
   const checkinUrl = buildCheckinUrl(appUrl, event.public_token)
   const qrDataUrl = await generateQRDataUrl(checkinUrl)
 
