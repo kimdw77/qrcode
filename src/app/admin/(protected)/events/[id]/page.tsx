@@ -3,6 +3,7 @@ import { getEventById, getEventDashboard } from '@/features/events/queries'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import EventActionPanel from './EventActionPanel'
+import QrCodePanel from './QrCodePanel'
 
 const STATUS_LABEL: Record<string, string> = {
   draft: '초안',
@@ -57,18 +58,8 @@ export default async function EventDetailPage({
         ))}
       </div>
 
-      {/* 체크인 URL */}
-      <div className="bg-white rounded-xl shadow-sm p-4 mb-4">
-        <p className="text-xs text-gray-500 mb-1">체크인 URL</p>
-        <p className="text-sm font-mono break-all text-brand-600">{checkinUrl}</p>
-        <Link
-          href={`/api/admin/events/${event.id}/qr`}
-          target="_blank"
-          className="inline-block mt-2 text-sm text-gray-600 underline"
-        >
-          QR 코드 생성
-        </Link>
-      </div>
+      {/* 체크인 URL + QR */}
+      <QrCodePanel eventId={event.id} checkinUrl={checkinUrl} />
 
       {/* 액션 패널 */}
       <EventActionPanel event={event} />
