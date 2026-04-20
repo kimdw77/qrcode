@@ -5,11 +5,12 @@ import { listAllQuestions } from '@/features/questions/queries'
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const admin = await requireAdmin()
   if (!admin) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
 
-  const questions = await listAllQuestions(createServiceClient(), params.id)
+  const { id } = await params
+  const questions = await listAllQuestions(createServiceClient(), id)
   return NextResponse.json({ questions })
 }

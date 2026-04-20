@@ -5,21 +5,22 @@ import { getEventById } from '@/features/events/queries'
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const admin = await requireAdmin()
   if (!admin) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
 
+  const { id } = await params
   const supa = createServiceClient()
   const [event, { data: registrations }, { data: checkins }] = await Promise.all([
-    getEventById(supa, params.id),
+    getEventById(supa, id),
     supa.from('registrations')
       .select('id, name, phone_last4, email_masked, organization, created_at')
-      .eq('event_id', params.id)
+      .eq('event_id', id)
       .order('name'),
     supa.from('checkins')
       .select('registration_id, checked_in_at')
-      .eq('event_id', params.id),
+      .eq('event_id', id),
   ])
 
   if (!event) return NextResponse.json({ error: 'not_found' }, { status: 404 })

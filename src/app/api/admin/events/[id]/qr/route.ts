@@ -6,12 +6,13 @@ import { getEventById } from '@/features/events/queries'
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const admin = await requireAdmin()
   if (!admin) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
 
-  const event = await getEventById(createServiceClient(), params.id)
+  const { id } = await params
+  const event = await getEventById(createServiceClient(), id)
   if (!event) return NextResponse.json({ error: 'not_found' }, { status: 404 })
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'

@@ -16,12 +16,13 @@ const STATUS_LABEL: Record<string, string> = {
 export default async function EventDetailPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
+  const { id } = await params
   const supabase = createServiceClient()
   const [event, stats] = await Promise.all([
-    getEventById(supabase, params.id),
-    getEventDashboard(supabase, params.id),
+    getEventById(supabase, id),
+    getEventDashboard(supabase, id),
   ])
 
   if (!event) notFound()
@@ -75,19 +76,19 @@ export default async function EventDetailPage({
       {/* 참석자 / 내보내기 */}
       <div className="grid gap-3 mt-4">
         <Link
-          href={`/admin/events/${params.id}/participants`}
+          href={`/admin/events/${id}/participants`}
           className="block bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition"
         >
           참석자 관리 →
         </Link>
         <Link
-          href={`/admin/events/${params.id}/questions`}
+          href={`/admin/events/${id}/questions`}
           className="block bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition"
         >
           Q&amp;A 관리 →
         </Link>
         <a
-          href={`/api/admin/events/${params.id}/export`}
+          href={`/api/admin/events/${id}/export`}
           className="block bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition"
         >
           체크인 결과 CSV 다운로드 →

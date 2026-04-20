@@ -11,14 +11,15 @@ const schema = z.object({
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const admin = await requireAdmin()
   if (!admin) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
 
+  const { id } = await params
   const parsed = schema.safeParse(await req.json())
   if (!parsed.success) return NextResponse.json({ error: 'invalid' }, { status: 400 })
 
-  await updateEventStatus(createServiceClient(), params.id, parsed.data.status as EventStatus)
+  await updateEventStatus(createServiceClient(), id, parsed.data.status as EventStatus)
   return NextResponse.json({ ok: true })
 }

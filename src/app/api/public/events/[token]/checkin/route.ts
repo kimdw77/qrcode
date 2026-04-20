@@ -12,13 +12,14 @@ import { hashIp } from '@/lib/crypto'
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { token: string } },
+  { params }: { params: Promise<{ token: string }> },
 ) {
   const supabase = createServiceClient()
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0] ?? '0.0.0.0'
   const ipHash = hashIp(ip)
 
-  const event = await getEventByToken(supabase, params.token)
+  const { token } = await params
+  const event = await getEventByToken(supabase, token)
   if (!event) {
     return NextResponse.json({ status: 'not_found' }, { status: 404 })
   }

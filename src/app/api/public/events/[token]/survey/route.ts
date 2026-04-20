@@ -7,11 +7,12 @@ import { getEventByToken } from '@/features/events/queries'
 import { makeSubmitterToken } from '@/lib/crypto'
 
 export async function GET(
-  req: NextRequest,
-  { params }: { params: { token: string } },
+  _req: NextRequest,
+  { params }: { params: Promise<{ token: string }> },
 ) {
   const supabase = createServiceClient()
-  const event = await getEventByToken(supabase, params.token)
+  const { token } = await params
+  const event = await getEventByToken(supabase, token)
   if (!event) return NextResponse.json({ error: 'not_found' }, { status: 404 })
 
   const survey = await getSurveyByEventId(supabase, event.id)
@@ -20,10 +21,11 @@ export async function GET(
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { token: string } },
+  { params }: { params: Promise<{ token: string }> },
 ) {
   const supabase = createServiceClient()
-  const event = await getEventByToken(supabase, params.token)
+  const { token } = await params
+  const event = await getEventByToken(supabase, token)
   if (!event) return NextResponse.json({ error: 'not_found' }, { status: 404 })
 
   if (!['checkin_closed', 'survey_open'].includes(event.status)) {

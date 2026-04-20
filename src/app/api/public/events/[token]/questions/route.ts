@@ -14,11 +14,12 @@ function getOrCreateCookie(req: NextRequest): { cookie: string; isNew: boolean }
 }
 
 export async function GET(
-  req: NextRequest,
-  { params }: { params: { token: string } },
+  _req: NextRequest,
+  { params }: { params: Promise<{ token: string }> },
 ) {
   const supabase = createServiceClient()
-  const event = await getEventByToken(supabase, params.token)
+  const { token } = await params
+  const event = await getEventByToken(supabase, token)
   if (!event) return NextResponse.json({ error: 'not_found' }, { status: 404 })
 
   const questions = await listVisibleQuestions(supabase, event.id)
@@ -27,10 +28,11 @@ export async function GET(
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { token: string } },
+  { params }: { params: Promise<{ token: string }> },
 ) {
   const supabase = createServiceClient()
-  const event = await getEventByToken(supabase, params.token)
+  const { token } = await params
+  const event = await getEventByToken(supabase, token)
   if (!event) return NextResponse.json({ error: 'not_found' }, { status: 404 })
 
   if (!['checkin_open', 'checkin_closed'].includes(event.status)) {

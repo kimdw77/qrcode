@@ -6,11 +6,12 @@ import { encryptPhone, hashPhone, maskEmail } from '@/lib/crypto'
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const admin = await requireAdmin()
   if (!admin) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
 
+  const { id } = await params
   const formData = await req.formData()
   const file = formData.get('file') as File | null
   if (!file) return NextResponse.json({ error: 'no_file' }, { status: 400 })
@@ -24,7 +25,7 @@ export async function POST(
 
   const supa = createServiceClient()
   const insertRows = rows.map((r) => ({
-    event_id: params.id,
+    event_id: id,
     name: r.name,
     phone_encrypted: encryptPhone(r.phone),
     phone_last4: r.phone.slice(-4),
