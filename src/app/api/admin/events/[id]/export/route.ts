@@ -44,11 +44,11 @@ export async function GET(
     }),
   )
 
-  const headers = Object.keys(rows[0] ?? {})
+  const headers = ['이름', '전화 끝 4자리', '이메일', '소속', '체크인', '체크인 시각', '등록일']
   const csv = [
     headers.join(','),
     ...rows.map((row: Record<string, string>) =>
-      headers.map((h) => `"${(row[h] ?? '').replace(/"/g, '""')}"`).join(','),
+      headers.map((h) => `"${String(row[h] ?? '').replace(/"/g, '""')}"`).join(','),
     ),
   ].join('\n')
 
