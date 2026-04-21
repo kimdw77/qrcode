@@ -42,7 +42,10 @@ export async function POST(
     note: r.note ?? null,
   }))
 
-  const { error } = await supa.from('registrations').insert(insertRows)
+  const { error } = await supa.from('registrations').upsert(insertRows, {
+    onConflict: 'event_id,phone_hash',
+    ignoreDuplicates: false,
+  })
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   return NextResponse.json({ imported: rows.length, duplicates, parseErrors: errors })
