@@ -69,5 +69,9 @@ export async function POST(
   await insertCheckin(supabase, event.id, registrationId, ipHash)
   await logCheckinAttempt(supabase, event.id, name, last4, 'success', ipHash)
 
-  return NextResponse.json({ status: 'success' })
+  return NextResponse.json({
+    status: 'success',
+    survey_mode: event.survey_mode,
+    google_forms_url: event.google_forms_url ?? null,
+  })
 }

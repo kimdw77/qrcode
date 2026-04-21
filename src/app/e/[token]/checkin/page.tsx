@@ -11,6 +11,11 @@ interface Candidate {
   email_masked: string | null
 }
 
+interface EventInfo {
+  survey_mode: string
+  google_forms_url: string | null
+}
+
 export default function CheckinPage() {
   const { token } = useParams<{ token: string }>()
   const [name, setName] = useState('')
@@ -19,6 +24,7 @@ export default function CheckinPage() {
   const [candidates, setCandidates] = useState<Candidate[]>([])
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
+  const [eventInfo, setEventInfo] = useState<EventInfo | null>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -33,6 +39,7 @@ export default function CheckinPage() {
 
       switch (data.status) {
         case 'success':
+          setEventInfo({ survey_mode: data.survey_mode, google_forms_url: data.google_forms_url })
           setStep('success')
           setMessage('체크인 완료!')
           break
@@ -69,12 +76,31 @@ export default function CheckinPage() {
   }
 
   if (step === 'success') {
+    const qnaUrl = `/e/${token}/qna`
+    const surveyUrl = eventInfo?.survey_mode === 'google_forms'
+      ? eventInfo.google_forms_url
+      : eventInfo?.survey_mode === 'self'
+      ? `/e/${token}/survey`
+      : null
+
     return (
-      <main className="flex min-h-screen items-center justify-center p-6">
-        <div className="text-center">
+      <main className="flex min-h-screen flex-col items-center justify-center p-6">
+        <div className="text-center w-full max-w-sm">
           <div className="text-6xl mb-4">✅</div>
           <h1 className="text-2xl font-bold text-green-600 mb-2">체크인 완료</h1>
-          <p className="text-gray-600">{name}님, 참석해주셔서 감사합니다!</p>
+          <p className="text-gray-600 mb-8">{name}님, 참석해주셔서 감사합니다!</p>
+          <div className="grid gap-3">
+            <a href={qnaUrl}
+              className="block bg-blue-600 text-white font-semibold py-4 rounded-xl text-base">
+              Q&amp;A 질문하기
+            </a>
+            {surveyUrl && (
+              <a href={surveyUrl} target={eventInfo?.survey_mode === 'google_forms' ? '_blank' : undefined}
+                className="block bg-purple-600 text-white font-semibold py-4 rounded-xl text-base">
+                설문조사 참여하기
+              </a>
+            )}
+          </div>
         </div>
       </main>
     )
