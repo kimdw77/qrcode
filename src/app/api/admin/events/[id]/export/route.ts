@@ -52,10 +52,11 @@ export async function GET(
     ),
   ].join('\n')
 
+  const filename = encodeURIComponent(`${event.name}_체크인.csv`)
   return new NextResponse('\uFEFF' + csv, {
     headers: {
       'Content-Type': 'text/csv; charset=utf-8',
-      'Content-Disposition': `attachment; filename="${encodeURIComponent(event.name)}_체크인.csv"`,
+      'Content-Disposition': `attachment; filename*=UTF-8''${filename}`,
     },
   })
 }
