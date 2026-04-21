@@ -9,12 +9,11 @@ export async function createEvent(
   createdBy: string,
 ): Promise<DbEvent> {
   const startAt = new Date(input.start_at)
-  const endAt = new Date(input.end_at)
 
   const checkinOpensAt =
-    input.checkin_opens_at ?? new Date(startAt.getTime() - 30 * 60 * 1000).toISOString()
+    input.checkin_opens_at ?? new Date(startAt.getTime() - 3 * 60 * 60 * 1000).toISOString()
   const checkinClosesAt =
-    input.checkin_closes_at ?? new Date(endAt.getTime() + 30 * 60 * 1000).toISOString()
+    input.checkin_closes_at ?? new Date(startAt.getTime() + 1 * 60 * 60 * 1000).toISOString()
 
   const publicToken = randomBytes(12).toString('base64url').slice(0, 16)
 
