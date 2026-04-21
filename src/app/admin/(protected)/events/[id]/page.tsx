@@ -45,7 +45,10 @@ export default async function EventDetailPage({
             {STATUS_LABEL[event.status]}
           </span>
         </div>
-        <Link href="/admin/events" className="text-sm text-gray-400">← 목록</Link>
+        <div className="flex gap-2 items-center">
+          <Link href={`/admin/events/${id}/edit`} className="text-sm text-blue-500 hover:text-blue-700">수정</Link>
+          <Link href="/admin/events" className="text-sm text-gray-400">← 목록</Link>
+        </div>
       </div>
 
       {/* 통계 */}

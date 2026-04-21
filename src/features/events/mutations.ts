@@ -41,6 +41,26 @@ export async function createEvent(
   return data
 }
 
+export async function updateEvent(
+  supabase: SupabaseClient,
+  eventId: string,
+  input: Partial<CreateEventInput>,
+): Promise<void> {
+  const updates: Record<string, unknown> = {}
+  if (input.name !== undefined) updates.name = input.name
+  if (input.description !== undefined) updates.description = input.description ?? null
+  if (input.location !== undefined) updates.location = input.location ?? null
+  if (input.start_at !== undefined) updates.start_at = input.start_at
+  if (input.end_at !== undefined) updates.end_at = input.end_at
+  if (input.checkin_opens_at !== undefined) updates.checkin_opens_at = input.checkin_opens_at
+  if (input.checkin_closes_at !== undefined) updates.checkin_closes_at = input.checkin_closes_at
+  if (input.survey_mode !== undefined) updates.survey_mode = input.survey_mode
+  if ('google_forms_url' in input) updates.google_forms_url = input.google_forms_url ?? null
+
+  const { error } = await supabase.from('events').update(updates).eq('id', eventId)
+  if (error) throw new Error(error.message)
+}
+
 export async function updateEventStatus(
   supabase: SupabaseClient,
   eventId: string,
