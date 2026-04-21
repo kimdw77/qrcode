@@ -15,7 +15,7 @@ CREATE TABLE events (
   google_forms_url  text,
   created_by        uuid REFERENCES auth.users(id),
   created_at        timestamptz NOT NULL DEFAULT now(),
-  retention_until   timestamptz NOT NULL DEFAULT (now() + interval '1 year')
+  retention_until   timestamptz NOT NULL DEFAULT (now() + interval '30 days')
 );
 
 CREATE INDEX idx_events_public_token ON events(public_token);
