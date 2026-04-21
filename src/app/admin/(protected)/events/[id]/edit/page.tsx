@@ -84,11 +84,11 @@ export default function EditEventPage() {
             defaultValue={defaults.location} className={inputCls} />
         </Field>
         <Field label="시작 일시 *">
-          <input name="start_at" type="datetime-local" required
+          <input name="start_at" type="datetime-local" required step={600}
             defaultValue={defaults.start_at} className={inputCls} />
         </Field>
         <Field label="종료 일시 *">
-          <input name="end_at" type="datetime-local" required
+          <input name="end_at" type="datetime-local" required step={600}
             defaultValue={defaults.end_at} className={inputCls} />
         </Field>
         <Field label="설명">

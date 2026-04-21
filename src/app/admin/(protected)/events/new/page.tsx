@@ -56,10 +56,10 @@ export default function NewEventPage() {
           <input name="location" type="text" maxLength={200} className={inputCls} placeholder="제주상공회의소 3층" />
         </Field>
         <Field label="시작 일시 *">
-          <input name="start_at" type="datetime-local" required className={inputCls} />
+          <input name="start_at" type="datetime-local" required step={600} className={inputCls} />
         </Field>
         <Field label="종료 일시 *">
-          <input name="end_at" type="datetime-local" required className={inputCls} />
+          <input name="end_at" type="datetime-local" required step={600} className={inputCls} />
         </Field>
         <Field label="설명">
           <textarea name="description" maxLength={1000} rows={3}
