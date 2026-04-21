@@ -2,6 +2,7 @@ import { createServiceClient } from '@/lib/supabase/server'
 import { listEvents } from '@/features/events/queries'
 import Link from 'next/link'
 import type { DbEvent } from '@/types/database'
+import DeleteEventButton from './DeleteEventButton'
 
 const STATUS_LABEL: Record<string, string> = {
   draft: '초안',
@@ -63,9 +64,12 @@ export default async function EventsPage() {
                   {new Date(event.start_at).toLocaleDateString('ko-KR')}
                 </p>
               </div>
-              <span className={`text-xs px-2 py-1 rounded-full font-medium ${STATUS_COLOR[event.status]}`}>
-                {STATUS_LABEL[event.status]}
-              </span>
+              <div className="flex flex-col items-end gap-2">
+                <span className={`text-xs px-2 py-1 rounded-full font-medium ${STATUS_COLOR[event.status]}`}>
+                  {STATUS_LABEL[event.status]}
+                </span>
+                <DeleteEventButton eventId={event.id} eventName={event.name} />
+              </div>
             </div>
           </Link>
         ))}

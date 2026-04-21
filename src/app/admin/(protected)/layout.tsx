@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -19,8 +20,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b px-4 py-3 flex items-center justify-between">
-        <Link href="/admin/events" className="font-bold text-brand-700">
-          KITA 제주 관리자
+        <Link href="/admin/events" className="flex items-center gap-2">
+          <Image src="/kitalogo.png" alt="KITA" width={80} height={24} className="object-contain" />
+          <span className="text-sm font-semibold text-brand-700">제주지부 관리자</span>
         </Link>
         <span className="text-sm text-gray-500">{adminUser.display_name}</span>
       </header>
