@@ -1,31 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useParams } from 'next/navigation'
-
-interface Question {
-  id: string
-  body: string
-  is_anonymous: boolean
-  author_name: string | null
-  created_at: string
-}
 
 export default function QnaPage() {
   const { token } = useParams<{ token: string }>()
-  const [questions, setQuestions] = useState<Question[]>([])
   const [body, setBody] = useState('')
   const [isAnonymous, setIsAnonymous] = useState(true)
   const [authorName, setAuthorName] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-
-  useEffect(() => {
-    fetch(`/api/public/events/${token}/questions`)
-      .then((r) => r.json())
-      .then((d) => setQuestions(d.questions ?? []))
-  }, [token, submitted])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -42,9 +27,7 @@ export default function QnaPage() {
         }),
       })
       if (res.status === 201) {
-        setBody('')
-        setAuthorName('')
-        setSubmitted((s) => !s)
+        setSubmitted(true)
       } else {
         setError('질문 등록에 실패했습니다.')
       }
@@ -55,26 +38,39 @@ export default function QnaPage() {
     }
   }
 
+  if (submitted) {
+    return (
+      <main className="flex min-h-screen items-center justify-center p-6">
+        <div className="text-center">
+          <div className="text-5xl mb-4">💬</div>
+          <h1 className="text-xl font-bold mb-2">질문이 등록됐습니다</h1>
+          <p className="text-sm text-gray-500 mb-6">운영자가 확인 후 답변드립니다.</p>
+          <button
+            onClick={() => { setSubmitted(false); setBody(''); setAuthorName('') }}
+            className="bg-brand-600 text-white px-6 py-3 rounded-xl text-sm font-semibold"
+          >
+            추가 질문하기
+          </button>
+        </div>
+      </main>
+    )
+  }
+
   return (
     <main className="flex flex-col min-h-screen p-4 max-w-lg mx-auto">
       <h1 className="text-xl font-bold mb-4">Q&amp;A</h1>
-
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow p-4 mb-6 grid gap-3">
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow p-4 grid gap-3">
         <textarea
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder="질문을 입력하세요 (최대 1000자)"
           maxLength={1000}
-          rows={4}
+          rows={5}
           className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-brand-500"
           required
         />
         <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={isAnonymous}
-            onChange={(e) => setIsAnonymous(e.target.checked)}
-          />
+          <input type="checkbox" checked={isAnonymous} onChange={(e) => setIsAnonymous(e.target.checked)} />
           익명으로 제출
         </label>
         {!isAnonymous && (
@@ -97,21 +93,6 @@ export default function QnaPage() {
           {loading ? '등록 중...' : '질문 등록'}
         </button>
       </form>
-
-      <div className="grid gap-3">
-        {questions.length === 0 && (
-          <p className="text-center text-gray-400 text-sm py-8">아직 질문이 없습니다.</p>
-        )}
-        {questions.map((q) => (
-          <div key={q.id} className="bg-white rounded-xl shadow-sm p-4">
-            <p className="text-sm text-gray-800 whitespace-pre-wrap">{q.body}</p>
-            <p className="text-xs text-gray-400 mt-2">
-              {q.is_anonymous ? '익명' : q.author_name} ·{' '}
-              {new Date(q.created_at).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
-            </p>
-          </div>
-        ))}
-      </div>
     </main>
   )
 }
