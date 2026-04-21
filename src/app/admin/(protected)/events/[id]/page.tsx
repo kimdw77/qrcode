@@ -71,6 +71,34 @@ export default async function EventDetailPage({
       {/* 액션 패널 */}
       <EventActionPanel event={event} />
 
+      {/* 설문 현황 */}
+      <div className="bg-white rounded-xl shadow-sm p-4 mt-4">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-xs text-gray-500">설문조사</p>
+          <Link href={`/admin/events/${id}/edit`} className="text-xs text-blue-500">설정 변경</Link>
+        </div>
+        {event.survey_mode === 'none' && (
+          <p className="text-sm text-gray-400">설문 없음</p>
+        )}
+        {event.survey_mode === 'google_forms' && (
+          <div>
+            <p className="text-sm font-medium text-purple-700 mb-1">Google Forms 연결됨</p>
+            {event.google_forms_url && (
+              <a href={event.google_forms_url} target="_blank" rel="noopener noreferrer"
+                className="text-xs text-blue-500 break-all hover:underline">
+                {event.google_forms_url}
+              </a>
+            )}
+          </div>
+        )}
+        {event.survey_mode === 'self' && (
+          <div>
+            <p className="text-sm font-medium text-purple-700 mb-1">자체 설문</p>
+            <p className="text-xs text-gray-400">자체 설문 문항 관리는 추후 지원 예정입니다.</p>
+          </div>
+        )}
+      </div>
+
       {/* 참석자 / 내보내기 */}
       <div className="grid gap-3 mt-4">
         <Link
