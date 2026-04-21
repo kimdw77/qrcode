@@ -16,7 +16,13 @@ export async function POST(
   const file = formData.get('file') as File | null
   if (!file) return NextResponse.json({ error: 'no_file' }, { status: 400 })
 
-  const content = await file.text()
+  const bytes = await file.arrayBuffer()
+  let content: string
+  try {
+    content = new TextDecoder('utf-8', { fatal: true }).decode(bytes).replace(/^\uFEFF/, '')
+  } catch {
+    content = new TextDecoder('euc-kr').decode(bytes)
+  }
   const { rows, errors, duplicates } = parseCsv(content)
 
   if (rows.length === 0) {
