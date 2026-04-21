@@ -16,6 +16,11 @@ export async function POST(
   const file = formData.get('file') as File | null
   if (!file) return NextResponse.json({ error: 'no_file' }, { status: 400 })
 
+  const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5 MB
+  if (file.size > MAX_FILE_SIZE) {
+    return NextResponse.json({ error: 'file_too_large', maxMb: 5 }, { status: 400 })
+  }
+
   const bytes = await file.arrayBuffer()
   let content: string
   try {

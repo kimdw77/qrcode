@@ -48,7 +48,8 @@ export function maskEmail(email: string): string {
 
 /** Q&A / 설문 submitter_token 생성 */
 export function makeSubmitterToken(eventId: string, cookie: string): string {
-  const salt = process.env.SUBMITTER_TOKEN_SALT ?? 'default-salt'
+  const salt = process.env.SUBMITTER_TOKEN_SALT
+  if (!salt) throw new Error('SUBMITTER_TOKEN_SALT 환경변수가 설정되지 않았습니다')
   return createHash('sha256').update(`${eventId}|${cookie}|${salt}`).digest('hex')
 }
 
