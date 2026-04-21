@@ -45,9 +45,9 @@ export default async function EventDetailPage({
             {STATUS_LABEL[event.status]}
           </span>
         </div>
-        <div className="flex gap-2 items-center">
-          <Link href={`/admin/events/${id}/edit`} className="text-sm text-blue-500 hover:text-blue-700">수정</Link>
+        <div className="flex flex-col items-end gap-1">
           <Link href="/admin/events" className="text-sm text-gray-400">← 목록</Link>
+          <Link href={`/admin/events/${id}/edit`} className="text-xs text-blue-500 hover:text-blue-700 border border-blue-300 px-2 py-0.5 rounded">행사 수정</Link>
         </div>
       </div>
 
