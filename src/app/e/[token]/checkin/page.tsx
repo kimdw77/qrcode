@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useParams } from 'next/navigation'
+import Image from 'next/image'
 
 type Step = 'form' | 'multi_match' | 'success' | 'error'
 
@@ -139,6 +140,9 @@ export default function CheckinPage() {
   return (
     <main className="flex min-h-screen flex-col items-center p-6">
       <div className="w-full max-w-sm">
+        <div className="flex justify-center mb-6">
+          <Image src="/kitalogo.png" alt="KITA 한국무역협회" width={160} height={48} className="object-contain" />
+        </div>
         <h1 className="text-2xl font-bold mb-1">체크인</h1>
         <p className="text-sm text-gray-500 mb-6">이름과 휴대폰 번호 뒤 4자리를 입력하세요.</p>
         <form onSubmit={handleSubmit} className="grid gap-4">
